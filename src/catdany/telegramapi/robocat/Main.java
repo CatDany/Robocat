@@ -3,8 +3,10 @@ package catdany.telegramapi.robocat;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 
 import catdany.telegramapi.robocat.logging.Log;
+import catdany.telegramapi.robocat.pamphlets.Pamphlets;
 import catdany.telegramapi.robocat.telegram.Message;
 import catdany.telegramapi.robocat.utils.Params;
 import catdany.telegramapi.robocat.utils.Utils;
@@ -31,6 +33,7 @@ public class Main {
 	public static void main(String[] args) {
 		Log.i("Started Robocat. Build (Commit Hash): " + VERSION_COMMIT_HASH);
 		readBotSettings();
+		Pamphlets.load();
 		
 		Bot bot = new Bot(TELEGRAM_BOT_TOKEN);
 		BotHandler botHandler = new BotHandler(bot, BOT_UPDATE_REQUEST_DELAY);
@@ -43,13 +46,14 @@ public class Main {
 		try {
 			FileReader reader = new FileReader(new File("bot_settings.txt"));
 			JsonObject json = parser.parse(reader).getAsJsonObject();
+			reader.close();
 			
 			TELEGRAM_BOT_TOKEN = json.get("token").getAsString();
 			HELP_COMMAND_TEXT = json.get("help").getAsString();
 			BOT_UPDATE_REQUEST_DELAY = json.get("update_request_delay").getAsLong();
 		} catch (FileNotFoundException t) {
 			Log.e("bot_settings.txt does not exist.", t);
-		} catch (JsonParseException t) {
+		} catch (JsonParseException | IOException t) {
 			Log.e("Unable to parse json in bot_settings.txt", t);
 		}
 	}
@@ -68,10 +72,41 @@ public class Main {
 		botHandler.addCommand("погладить", (Message m) -> {
 			botHandler.getBot().sendMessage("" + m.getChatId(), "🐱");
 		});
+		
 		botHandler.addCommand("амари", (Message m) -> {
 			botHandler.getBot().request("sendSticker", new Params()
 					.add("chat_id", "" + m.getChatId())
 					.add("sticker", Utils.draw(AMARI_STICKERS)));
+		});
+		
+		botHandler.addCommand("листовка", (Message m) -> {
+			Pamphlets data = Pamphlets.getDataFor(m.getFrom().getId());
+			int collectedId = data.collect();
+			String msg = m.getFrom().getFullName() + ", у тебя аура существа, которое любит задавать вопросы.";
+			if (collectedId >= 0)
+				msg = m.getFrom().getFullName() + " получает предмет: <i>[" + Pamphlets.pamphletNames[collectedId] + "]</i>.";
+			botHandler.getBot().sendMessage("" + m.getChatId(), msg, "HTML", false);
+			
+			if (data.countObtained() == Pamphlets.pamphletNames.length) {
+				botHandler.getBot().sendMessage("" + m.getChatId(), m.getFrom().getFullName() + " получает достижение <b>Вот теперь все ясно</b>!", "HTML", false);
+			}
+		});
+		
+		botHandler.addCommand("листовки", (Message m) -> {
+			Pamphlets data = Pamphlets.getDataFor(m.getFrom().getId());
+			StringBuilder str = new StringBuilder();
+			str.append("Собранные листовки:\n");
+			for (String i : data.getObtainedPamphlets()) {
+				str.append("- " + i + "\n");
+			}
+			str.append("\nЕще не собранные листовки:\n");
+			for (String i : data.getUnobtainedPamphlets()) {
+				str.append("- " + i + "\n");
+			}
+			APIResponse r0 = botHandler.getBot().sendMessage("" + m.getFrom().getId(), str.toString());
+			if (!r0.isOK()) {
+				botHandler.getBot().sendMessage("" + m.getChatId(), "Невозможно выполнить команду /листовки. Необходимо добавить бота в список друзей.");
+			}
 		});
 	}
 }

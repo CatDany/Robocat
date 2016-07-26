@@ -32,6 +32,17 @@ public class User {
 		return lastName;
 	}
 	
+	public String getFullName() {
+		if (firstName != null && lastName != null)
+			return firstName + " " + lastName;
+		else if (firstName != null && lastName == null)
+			return firstName;
+		else if (username != null)
+			return "@" + username;
+		else
+			return "#" + id;
+	}
+	
 	public String getUsername() {
 		return username;
 	}

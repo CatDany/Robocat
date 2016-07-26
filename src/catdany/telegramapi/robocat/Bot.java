@@ -35,6 +35,7 @@ public class Bot {
 			InputStreamReader isr = new InputStreamReader(url.openStream());
 			JsonParser parser = new JsonParser();
 			JsonElement json = parser.parse(isr);
+			isr.close();
 			return new APIResponse(json);
 		} catch (IOException t) {
 			Log.e("Unable to perform API request: " + requestURL, t);
