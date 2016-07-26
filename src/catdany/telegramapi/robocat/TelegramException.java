@@ -11,8 +11,13 @@ public class TelegramException extends RuntimeException {
 	private String errorDesc;
 	
 	public TelegramException(APIResponse response) {
-		this.errorCode = response.getErrorCode();
-		this.errorDesc = response.getErrorDesc();
+		if (response == null) {
+			errorCode = 0;
+		}
+		else {
+			this.errorCode = response.getErrorCode();
+			this.errorDesc = response.getErrorDesc();
+		}
 	}
 	
 	public String getMessage() {
