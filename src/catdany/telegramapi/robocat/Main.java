@@ -20,8 +20,7 @@ public class Main {
 	
 	private static String TELEGRAM_BOT_TOKEN;
 	private static String HELP_COMMAND_TEXT;
-	
-	public static final long BOT_UPDATE_REQUEST_DELAY = 1000;
+	public static long BOT_UPDATE_REQUEST_DELAY;
 	
 	public static final String AMARI_STICKERS[] = new String[] {
 		"BQADAgADKwADqxirAuIwV_5H4vi9Ag", "BQADAgADLQADqxirAhK0IQQETh_aAg", "BQADAgADMAADqxirAgozQ6vpv8cTAg", "BQADAgADNQADqxirAlx663SXJiPkAg"
@@ -45,6 +44,7 @@ public class Main {
 			
 			TELEGRAM_BOT_TOKEN = json.get("token").getAsString();
 			HELP_COMMAND_TEXT = json.get("help").getAsString();
+			BOT_UPDATE_REQUEST_DELAY = json.get("update_request_delay").getAsLong();
 		} catch (FileNotFoundException t) {
 			Log.e("bot_settings.txt does not exist.", t);
 		} catch (JsonParseException t) {
