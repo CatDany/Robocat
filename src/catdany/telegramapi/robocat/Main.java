@@ -5,11 +5,14 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
+
+import catdany.telegramapi.robocat.features.Pamphlets;
+import catdany.telegramapi.robocat.features.WoWToken;
 import catdany.telegramapi.robocat.logging.Log;
-import catdany.telegramapi.robocat.pamphlets.Pamphlets;
 import catdany.telegramapi.robocat.telegram.Message;
 import catdany.telegramapi.robocat.utils.Params;
 import catdany.telegramapi.robocat.utils.Utils;
+
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
@@ -130,5 +133,10 @@ public class Main {
 			botHandler.getBot().sendMessage("" + m.getChatId(), String.format("Терпение! Осталось всего %s д %s ч %s м %s с.", days, hours, minutes, seconds));
 			
 		}, "легион", "скореебылегион");
+		
+		botHandler.addCommandAlias((Message m) -> {
+			WoWToken.update();
+			botHandler.getBot().sendMessage("" + m.getChatId(), "Цена жетона WoW (EU): <b>" + WoWToken.price + "</b>\nНаименьшая цена за 24 ч: <b>" + WoWToken.min24 + "</b>\nНаибольшая цена за 24 ч: <b>" + WoWToken.max24 + "</b>", "HTML", false);
+		}, "токен", "жетон");
 	}
 }
