@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Date;
 
 import catdany.telegramapi.robocat.logging.Log;
 import catdany.telegramapi.robocat.pamphlets.Pamphlets;
@@ -29,6 +30,8 @@ public class Main {
 	public static final String OW_STICKERS[] = new String[] {
 		"BQADAQADAwADJBlPCz-1SHLhWOYbAg","BQADAQADBQADJBlPC4oOLNN4paabAg","BQADAQADBwADJBlPC_aTzmzu_-O6Ag","BQADAQADCQADJBlPC4SHvtfhm8nUAg","BQADAQADCwADJBlPC8LEzIZzv0ajAg","BQADAQADDQADJBlPC1f6ZfwPsDpfAg","BQADAQADDwADJBlPC50DdIn9Om2vAg","BQADAQADEQADJBlPCyO6duepWPLvAg","BQADAQADEwADJBlPC-zFg7FaoR5DAg","BQADAQADFQADJBlPC6_W0r3Qu3JjAg","BQADAQADFwADJBlPC-l4j5sQZ92FAg","BQADAQADGQADJBlPC3TCN6X3L2QNAg","BQADAQADGwADJBlPCwXZKcrRRCXqAg","BQADAQADHQADJBlPC3VtPxEO2id8Ag","BQADAQADHwADJBlPC_YZHY0Wl2kwAg","BQADAQADIQADJBlPC6QTBNilJkBSAg","BQADAQADIwADJBlPC33Te7Pqi42aAg","BQADAQADJQADJBlPC81ZR2VWV9dFAg","BQADAQADJwADJBlPC4dpb_CkeBVGAg","BQADAQADKQADJBlPCxDoL8sfQ1MKAg"
 	};
+	
+	public static final int LEGION_LAUNCH_TIME = 1472594400;
 	
 	public static void main(String[] args) {
 		Log.i("Started Robocat. Build (Commit Hash): " + VERSION_COMMIT_HASH);
@@ -114,5 +117,15 @@ public class Main {
 			int rand = (int)(Math.random() * 100);
 			botHandler.getBot().sendMessage("" + m.getChatId(), "<i>" + m.getFrom().getFullName() + " выбрасывает " + rand + " (0-100)</i>", "HTML", false);
 		}, "число", "roll");
+		
+		botHandler.addCommandAlias((Message m) -> {
+			int timeLeft = LEGION_LAUNCH_TIME - (int)(System.currentTimeMillis()/1000);
+			int days = timeLeft / (60*60*24);
+			int hours = timeLeft % (60*60*24) / (60*60);
+			int minutes = timeLeft % (60*60) / 60;
+			int seconds = timeLeft % 60;
+			botHandler.getBot().sendMessage("" + m.getChatId(), String.format("Терпение! Осталось всего %s д %s ч %s м %s с.", days, hours, minutes, seconds));
+			
+		}, "легион", "скореебылегион");
 	}
 }
