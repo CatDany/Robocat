@@ -3,6 +3,7 @@ package catdany.telegramapi.robocat;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.function.Consumer;
 
 import catdany.telegramapi.robocat.logging.Log;
 import catdany.telegramapi.robocat.telegram.Message;
@@ -16,11 +17,12 @@ import com.google.gson.JsonParser;
 public class Main {
 	
 	private static String TELEGRAM_BOT_TOKEN;
+	private static String HELP_COMMAND_TEXT;
 	
 	public static final long BOT_UPDATE_REQUEST_DELAY = 1000;
 	
 	public static final String AMARI_STICKERS[] = new String[] {
-		"BQADAgADKwADqxirAuIwV_5H4vi9Ag", "BQADAgADLQADqxirAhK0IQQETh_aAg", "BQADAgADMAADqxirAgozQ6vpv8cTAg"
+		"BQADAgADKwADqxirAuIwV_5H4vi9Ag", "BQADAgADLQADqxirAhK0IQQETh_aAg", "BQADAgADMAADqxirAgozQ6vpv8cTAg", "BQADAgADNQADqxirAlx663SXJiPkAg"
 	};
 	
 	public static void main(String[] args) {
@@ -40,6 +42,7 @@ public class Main {
 			JsonObject json = parser.parse(reader).getAsJsonObject();
 			
 			TELEGRAM_BOT_TOKEN = json.get("token").getAsString();
+			HELP_COMMAND_TEXT = json.get("help").getAsString();
 		} catch (FileNotFoundException t) {
 			Log.e("bot_settings.txt does not exist.", t);
 		} catch (JsonParseException t) {
@@ -48,6 +51,14 @@ public class Main {
 	}
 	
 	private static void addBotCommands(BotHandler botHandler) {
+		Consumer<Message> cmdHelp = (Message m) -> {
+			botHandler.getBot().sendMessage("" + m.getChatId(), HELP_COMMAND_TEXT, "HTML", true);
+		};
+		botHandler.addCommand("", cmdHelp);
+		botHandler.addCommand("команды", cmdHelp);
+		botHandler.addCommand("помощь", cmdHelp);
+		
+		
 		botHandler.addCommand("погладить", (Message m) -> {
 			botHandler.getBot().sendMessage("" + m.getChatId(), "🐱");
 		});

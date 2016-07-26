@@ -55,14 +55,15 @@ public class Bot {
 		return updates;
 	}
 	
-	public APIResponse sendMessage(String chatId, String message, String parseMode) {
+	public APIResponse sendMessage(String chatId, String message, String parseMode, boolean disableWebPagePreview) {
 		return request("sendMessage", new Params()
 				.add("chat_id", chatId)
 				.add("text", message)
-				.add("parseMode", parseMode));
+				.add("parse_mode", parseMode)
+				.add("disable_web_page_preview", "" + disableWebPagePreview));
 	}
 	
 	public APIResponse sendMessage(String chatId, String message) {
-		return sendMessage(chatId, message, "");
+		return sendMessage(chatId, message, "", false);
 	}
 }
