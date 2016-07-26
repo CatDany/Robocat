@@ -103,6 +103,7 @@ public class Main {
 			for (String i : data.getUnobtainedPamphlets()) {
 				str.append("- " + i + "\n");
 			}
+			str.append("\nНапишите /листовка, чтобы собрать листовку.");
 			APIResponse r0 = botHandler.getBot().sendMessage("" + m.getFrom().getId(), str.toString());
 			if (!r0.isOK()) {
 				botHandler.getBot().sendMessage("" + m.getChatId(), "Невозможно выполнить команду /листовки. Необходимо добавить бота в список друзей.");
