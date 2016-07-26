@@ -36,6 +36,10 @@ public class Update {
 		return msgEdited;
 	}
 	
+	public Message getActualMessage() {
+		return msgEdited != null ? msgEdited : msg;
+	}
+	
 	public CallbackQuery getCallbackQuery() {
 		return callbackQuery;
 	}
