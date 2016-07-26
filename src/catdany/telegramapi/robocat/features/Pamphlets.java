@@ -1,4 +1,4 @@
-package catdany.telegramapi.robocat.pamphlets;
+package catdany.telegramapi.robocat.features;
 
 import java.io.File;
 import java.io.FileNotFoundException;
