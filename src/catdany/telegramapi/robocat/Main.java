@@ -16,6 +16,8 @@ import com.google.gson.JsonParser;
 
 public class Main {
 	
+	public static final String VERSION_COMMIT_HASH = "";
+	
 	private static String TELEGRAM_BOT_TOKEN;
 	private static String HELP_COMMAND_TEXT;
 	
@@ -26,7 +28,7 @@ public class Main {
 	};
 	
 	public static void main(String[] args) {
-		Log.i("Started.");
+		Log.i("Started Robocat. Build (Commit Hash): " + VERSION_COMMIT_HASH);
 		readBotSettings();
 		
 		Bot bot = new Bot(TELEGRAM_BOT_TOKEN);
