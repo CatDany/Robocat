@@ -32,7 +32,7 @@ public class Params {
 				return null;
 			}
 		}
-		return str.substring(1);
+		return str.length() > 0 ? str.substring(1) : "";
 	}
 	
 }

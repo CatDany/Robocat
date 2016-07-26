@@ -6,6 +6,11 @@ import java.io.InputStreamReader;
 import java.net.URL;
 
 import catdany.telegramapi.robocat.logging.Log;
+import catdany.telegramapi.robocat.telegram.Message;
+import catdany.telegramapi.robocat.telegram.User;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 
 public class Utils {
@@ -30,5 +35,33 @@ public class Utils {
 			Log.e("Unable to get IP address.", t);
 			return null;
 		}
+	}
+	
+	public static <T>T draw(T[] pool) {
+		return pool[(int)(Math.random() * pool.length)];
+	}
+	
+	public static String string(JsonElement json) {
+		return json != null ? json.getAsString() : null;
+	}
+	
+	public static int integer(JsonElement json) {
+		return json != null ? json.getAsInt() : 0;
+	}
+	
+	public static long longint(JsonElement json) {
+		return json != null ? json.getAsLong() : 0;
+	}
+	
+	public static JsonObject jsonobj(JsonElement json) {
+		return json != null ? json.getAsJsonObject() : null;
+	}
+	
+	public static Message msg(JsonElement json) {
+		return json != null ? new Message(json) : null;
+	}
+	
+	public static User user(JsonElement json) {
+		return json != null ? new User(json) : null;
 	}
 }
