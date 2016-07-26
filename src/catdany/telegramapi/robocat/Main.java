@@ -3,7 +3,6 @@ package catdany.telegramapi.robocat;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.function.Consumer;
 
 import catdany.telegramapi.robocat.logging.Log;
 import catdany.telegramapi.robocat.telegram.Message;
@@ -24,6 +23,9 @@ public class Main {
 	
 	public static final String AMARI_STICKERS[] = new String[] {
 		"BQADAgADKwADqxirAuIwV_5H4vi9Ag", "BQADAgADLQADqxirAhK0IQQETh_aAg", "BQADAgADMAADqxirAgozQ6vpv8cTAg", "BQADAgADNQADqxirAlx663SXJiPkAg"
+	};
+	public static final String OW_STICKERS[] = new String[] {
+		"BQADAQADAwADJBlPCz-1SHLhWOYbAg","BQADAQADBQADJBlPC4oOLNN4paabAg","BQADAQADBwADJBlPC_aTzmzu_-O6Ag","BQADAQADCQADJBlPC4SHvtfhm8nUAg","BQADAQADCwADJBlPC8LEzIZzv0ajAg","BQADAQADDQADJBlPC1f6ZfwPsDpfAg","BQADAQADDwADJBlPC50DdIn9Om2vAg","BQADAQADEQADJBlPCyO6duepWPLvAg","BQADAQADEwADJBlPC-zFg7FaoR5DAg","BQADAQADFQADJBlPC6_W0r3Qu3JjAg","BQADAQADFwADJBlPC-l4j5sQZ92FAg","BQADAQADGQADJBlPC3TCN6X3L2QNAg","BQADAQADGwADJBlPCwXZKcrRRCXqAg","BQADAQADHQADJBlPC3VtPxEO2id8Ag","BQADAQADHwADJBlPC_YZHY0Wl2kwAg","BQADAQADIQADJBlPC6QTBNilJkBSAg","BQADAQADIwADJBlPC33Te7Pqi42aAg","BQADAQADJQADJBlPC81ZR2VWV9dFAg","BQADAQADJwADJBlPC4dpb_CkeBVGAg","BQADAQADKQADJBlPCxDoL8sfQ1MKAg"
 	};
 	
 	public static void main(String[] args) {
@@ -53,13 +55,15 @@ public class Main {
 	}
 	
 	private static void addBotCommands(BotHandler botHandler) {
-		Consumer<Message> cmdHelp = (Message m) -> {
+		botHandler.addCommandAlias((Message m) -> {
 			botHandler.getBot().sendMessage("" + m.getChatId(), HELP_COMMAND_TEXT, "HTML", true);
-		};
-		botHandler.addCommand("", cmdHelp);
-		botHandler.addCommand("команды", cmdHelp);
-		botHandler.addCommand("помощь", cmdHelp);
+		}, "", "команды", "помощь");
 		
+		botHandler.addCommandAlias((Message m) -> {
+			botHandler.getBot().request("sendSticker", new Params()
+					.add("chat_id", "" + m.getChatId())
+					.add("sticker", Utils.draw(OW_STICKERS)));
+		}, "ow", "overwatch", "ов", "овервотч");
 		
 		botHandler.addCommand("погладить", (Message m) -> {
 			botHandler.getBot().sendMessage("" + m.getChatId(), "🐱");

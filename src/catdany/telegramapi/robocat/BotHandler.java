@@ -94,6 +94,12 @@ public class BotHandler implements Runnable {
 		}
 	}
 	
+	public void addCommandAlias(Consumer<Message> r, String... aliases) {
+		for (String i : aliases) {
+			addCommand(i, r);
+		}
+	}
+	
 	public boolean removeCommand(String command) {
 		if (commands.containsKey(command)) {
 			commands.put(command, null);
