@@ -109,5 +109,10 @@ public class Main {
 				botHandler.getBot().sendMessage("" + m.getChatId(), "Невозможно выполнить команду /листовки. Необходимо добавить бота в список друзей.");
 			}
 		});
+		
+		botHandler.addCommandAlias((Message m) -> {
+			int rand = (int)(Math.random() * 100);
+			botHandler.getBot().sendMessage("" + m.getChatId(), "<i>" + m.getFrom().getFullName() + " выбрасывает " + rand + " (0-100)</i>", "HTML", false);
+		}, "число", "roll");
 	}
 }
