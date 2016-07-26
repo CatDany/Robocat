@@ -90,25 +90,29 @@ public class Main {
 			botHandler.getBot().sendMessage("" + m.getChatId(), msg, "HTML", false);
 			
 			if (data.countObtained() == Pamphlets.pamphletNames.length) {
-				botHandler.getBot().sendMessage("" + m.getChatId(), m.getFrom().getFullName() + " получает достижение <b>Вот теперь все ясно</b>!", "HTML", false);
+				botHandler.getBot().sendMessage("" + m.getChatId(), m.getFrom().getFullName() + " получает достижение <b>[Вот теперь все ясно]</b>!", "HTML", false);
 			}
 		});
 		
 		botHandler.addCommand("листовки", (Message m) -> {
 			Pamphlets data = Pamphlets.getDataFor(m.getFrom().getId());
-			StringBuilder str = new StringBuilder();
-			str.append("Собранные листовки:\n");
-			for (String i : data.getObtainedPamphlets()) {
-				str.append("- " + i + "\n");
-			}
-			str.append("\nЕще не собранные листовки:\n");
-			for (String i : data.getUnobtainedPamphlets()) {
-				str.append("- " + i + "\n");
-			}
-			str.append("\nНапишите /листовка, чтобы собрать листовку.");
-			APIResponse r0 = botHandler.getBot().sendMessage("" + m.getFrom().getId(), str.toString());
-			if (!r0.isOK()) {
-				botHandler.getBot().sendMessage("" + m.getChatId(), "Невозможно выполнить команду /листовки. Необходимо добавить бота в список друзей.");
+			if (data.countObtained() == Pamphlets.pamphletNames.length) {
+				botHandler.getBot().sendMessage("" + m.getChatId(), m.getFrom().getFullName() + " собрал(а) имеет достижение <b>[Вот теперь все ясно]</b>!", "HTML", false);
+			} else {
+				StringBuilder str = new StringBuilder();
+				str.append("Собранные листовки:\n");
+				for (String i : data.getObtainedPamphlets()) {
+					str.append("- " + i + "\n");
+				}
+				str.append("\nЕще не собранные листовки:\n");
+				for (String i : data.getUnobtainedPamphlets()) {
+					str.append("- " + i + "\n");
+				}
+				str.append("\nНапишите /листовка, чтобы собрать листовку.");
+				APIResponse r0 = botHandler.getBot().sendMessage("" + m.getFrom().getId(), str.toString());
+				if (!r0.isOK()) {
+					botHandler.getBot().sendMessage("" + m.getChatId(), "Невозможно выполнить команду /листовки. Необходимо добавить бота в список друзей.");
+				}
 			}
 		});
 		
