@@ -27,7 +27,7 @@ public class Main {
 	public static long BOT_UPDATE_REQUEST_DELAY;
 	
 	public static final String AMARI_STICKERS[] = new String[] {
-		"BQADAgADKwADqxirAuIwV_5H4vi9Ag", "BQADAgADLQADqxirAhK0IQQETh_aAg", "BQADAgADMAADqxirAgozQ6vpv8cTAg", "BQADAgADNQADqxirAlx663SXJiPkAg"
+		"BQADAgADKwADqxirAuIwV_5H4vi9Ag", "BQADAgADLQADqxirAhK0IQQETh_aAg", "BQADAgADMAADqxirAgozQ6vpv8cTAg", "BQADAgADNQADqxirAlx663SXJiPkAg", "BQADAgADNwADqxirAmVdGcgE"
 	};
 	public static final String OW_STICKERS[] = new String[] {
 		"BQADAQADAwADJBlPCz-1SHLhWOYbAg","BQADAQADBQADJBlPC4oOLNN4paabAg","BQADAQADBwADJBlPC_aTzmzu_-O6Ag","BQADAQADCQADJBlPC4SHvtfhm8nUAg","BQADAQADCwADJBlPC8LEzIZzv0ajAg","BQADAQADDQADJBlPC1f6ZfwPsDpfAg","BQADAQADDwADJBlPC50DdIn9Om2vAg","BQADAQADEQADJBlPCyO6duepWPLvAg","BQADAQADEwADJBlPC-zFg7FaoR5DAg","BQADAQADFQADJBlPC6_W0r3Qu3JjAg","BQADAQADFwADJBlPC-l4j5sQZ92FAg","BQADAQADGQADJBlPC3TCN6X3L2QNAg","BQADAQADGwADJBlPCwXZKcrRRCXqAg","BQADAQADHQADJBlPC3VtPxEO2id8Ag","BQADAQADHwADJBlPC_YZHY0Wl2kwAg","BQADAQADIQADJBlPC6QTBNilJkBSAg","BQADAQADIwADJBlPC33Te7Pqi42aAg","BQADAQADJQADJBlPC81ZR2VWV9dFAg","BQADAQADJwADJBlPC4dpb_CkeBVGAg","BQADAQADKQADJBlPCxDoL8sfQ1MKAg"
@@ -94,24 +94,18 @@ public class Main {
 			
 			if (data.countObtained() == Pamphlets.pamphletNames.length) {
 				botHandler.getBot().sendMessage("" + m.getChatId(), m.getFrom().getFullName() + " получает достижение <b>[Вот теперь все ясно]</b>!", "HTML", false);
+			} else if (collectedId >= 0) {
+				StringBuilder str = pamphletsInfo(data);
+				botHandler.getBot().sendMessage("" + m.getFrom().getId(), str.toString());
 			}
 		});
 		
 		botHandler.addCommand("листовки", (Message m) -> {
 			Pamphlets data = Pamphlets.getDataFor(m.getFrom().getId());
 			if (data.countObtained() == Pamphlets.pamphletNames.length) {
-				botHandler.getBot().sendMessage("" + m.getChatId(), m.getFrom().getFullName() + " собрал(а) имеет достижение <b>[Вот теперь все ясно]</b>!", "HTML", false);
+				botHandler.getBot().sendMessage("" + m.getChatId(), m.getFrom().getFullName() + " имеет достижение <b>[Вот теперь все ясно]</b>!", "HTML", false);
 			} else {
-				StringBuilder str = new StringBuilder();
-				str.append("Собранные листовки:\n");
-				for (String i : data.getObtainedPamphlets()) {
-					str.append("- " + i + "\n");
-				}
-				str.append("\nЕще не собранные листовки:\n");
-				for (String i : data.getUnobtainedPamphlets()) {
-					str.append("- " + i + "\n");
-				}
-				str.append("\nНапишите /листовка, чтобы собрать листовку.");
+				StringBuilder str = pamphletsInfo(data);
 				APIResponse r0 = botHandler.getBot().sendMessage("" + m.getFrom().getId(), str.toString());
 				if (!r0.isOK()) {
 					botHandler.getBot().sendMessage("" + m.getChatId(), "Невозможно выполнить команду /листовки. Необходимо добавить бота в список друзей.");
@@ -138,5 +132,19 @@ public class Main {
 			WoWToken.update();
 			botHandler.getBot().sendMessage("" + m.getChatId(), "Цена жетона WoW (EU): <b>" + WoWToken.price + "</b>\nНаименьшая цена за 24 ч: <b>" + WoWToken.min24 + "</b>\nНаибольшая цена за 24 ч: <b>" + WoWToken.max24 + "</b>", "HTML", false);
 		}, "токен", "жетон");
+	}
+	
+	private static StringBuilder pamphletsInfo(Pamphlets data) {
+		StringBuilder str = new StringBuilder();
+		str.append("Собранные листовки:\n");
+		for (String i : data.getObtainedPamphlets()) {
+			str.append("- " + i + "\n");
+		}
+		str.append("\nЕще не собранные листовки:\n");
+		for (String i : data.getUnobtainedPamphlets()) {
+			str.append("- " + i + "\n");
+		}
+		str.append("\nНапишите /листовка, чтобы собрать листовку.");
+		return str;
 	}
 }
