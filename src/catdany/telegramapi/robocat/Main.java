@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Date;
 
 import catdany.telegramapi.robocat.logging.Log;
 import catdany.telegramapi.robocat.pamphlets.Pamphlets;
