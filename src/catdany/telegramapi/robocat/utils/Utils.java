@@ -12,7 +12,6 @@ import catdany.telegramapi.robocat.telegram.User;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-
 public class Utils {
 	
 	public static final String IP_API_URL = "http://api.ipify.org";
@@ -35,6 +34,14 @@ public class Utils {
 			Log.e("Unable to get IP address.", t);
 			return null;
 		}
+	}
+	
+	public static String concatenateSubarray(String[] array, int start, String separator) {
+		StringBuilder str = new StringBuilder();
+		for (int i = start; i < array.length; i++) {
+			str.append(separator + array[i]);
+		}
+		return str.substring(1);
 	}
 	
 	public static <T>T draw(T[] pool) {

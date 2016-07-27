@@ -5,7 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-
+import catdany.telegramapi.robocat.features.ArmoryData;
+import catdany.telegramapi.robocat.features.BattleNetAPI;
 import catdany.telegramapi.robocat.features.Pamphlets;
 import catdany.telegramapi.robocat.features.WoWToken;
 import catdany.telegramapi.robocat.logging.Log;
@@ -13,14 +14,14 @@ import catdany.telegramapi.robocat.telegram.Message;
 import catdany.telegramapi.robocat.utils.Params;
 import catdany.telegramapi.robocat.utils.Utils;
 
-
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 
+
 public class Main {
 	
-	public static final String VERSION_COMMIT_HASH = "fd253474d7e8db88216a504664e688cbf2a13484";
+	public static final String VERSION_COMMIT_HASH = "54a6c59cf45c44f2c153977542a78cffb24de3c0";
 	
 	private static String TELEGRAM_BOT_TOKEN;
 	private static String HELP_COMMAND_TEXT;
@@ -66,7 +67,7 @@ public class Main {
 	private static void addBotCommands(BotHandler botHandler) {
 		botHandler.addCommandAlias((Message m) -> {
 			botHandler.getBot().sendMessage("" + m.getChatId(), HELP_COMMAND_TEXT, "HTML", true);
-		}, "", "команды", "помощь");
+		}, "", "команды", "помощь", "start");
 		
 		botHandler.addCommandAlias((Message m) -> {
 			botHandler.getBot().request("sendSticker", new Params()
@@ -131,7 +132,30 @@ public class Main {
 		botHandler.addCommandAlias((Message m) -> {
 			WoWToken.update();
 			botHandler.getBot().sendMessage("" + m.getChatId(), "Цена жетона WoW (EU): <b>" + WoWToken.price + "</b>\nНаименьшая цена за 24 ч: <b>" + WoWToken.min24 + "</b>\nНаибольшая цена за 24 ч: <b>" + WoWToken.max24 + "</b>", "HTML", false);
+			botHandler.getBot().sendPhoto("" + m.getChatId(), new File("wowtoken.png"));
 		}, "токен", "жетон");
+		
+		botHandler.addCommand("армори", (Message m) -> {
+			String[] args = m.getText().split(" ", 3);
+			if (args.length < 3) {
+				botHandler.getBot().sendMessage("" + m.getChatId(), "Пример использования команды:\n\n/армори Умбрик Свежеватель душ");
+			} else {
+				String character = args[1];
+				String realm = args[2].replace(' ', '-');
+				ArmoryData armory = BattleNetAPI.requestArmoryData(realm, character);
+				if (armory != null) {
+					botHandler.getBot().sendMessage("" + m.getChatId(),
+							"<a href='" + armory.getArmoryLink() + "'>" + armory.getName() + "-" + armory.getRealm().replace(" ", "") + "</a>\n"
+						  + "<b>" + armory.getLevel() + "</b> " + armory.getLocalizedRace() + "-" + armory.getLocalizedClass() + "\n"
+						  + "" + armory.getLocalizedFaction() + "\n"
+						  + "🏆 " + armory.getAchievementPoints() + " очков\n"
+						  + "⚔ " + armory.getTotalHonorableKills() + " ПП"
+							, "HTML", false);
+				} else {
+					botHandler.getBot().sendMessage("" + m.getChatId(), "Персонаж " + character + "-" + realm + " не существует.");
+				}
+			}
+		});
 	}
 	
 	private static StringBuilder pamphletsInfo(Pamphlets data) {

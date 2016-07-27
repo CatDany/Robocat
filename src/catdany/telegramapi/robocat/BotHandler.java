@@ -57,7 +57,7 @@ public class BotHandler implements Runnable {
 			for (Update i : upd) {
 				String cmd = i.getActualMessage().getText();
 				if (cmd != null && cmd.startsWith("/")) {
-					cmd = cmd.substring(1);
+					cmd = cmd.split(" ")[0].substring(1);
 					if (commands.containsKey(cmd)) {
 						Log.i("Executing command /" + cmd + " from user @" + i.getActualMessage().getFrom().getUsername());
 						commands.get(cmd).accept(i.getActualMessage());

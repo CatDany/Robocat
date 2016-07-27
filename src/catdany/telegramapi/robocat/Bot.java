@@ -1,7 +1,12 @@
 package catdany.telegramapi.robocat;
 
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 
 import catdany.telegramapi.robocat.logging.Log;
@@ -66,5 +71,55 @@ public class Bot {
 	
 	public APIResponse sendMessage(String chatId, String message) {
 		return sendMessage(chatId, message, "", false);
+	}
+	
+	public APIResponse sendPhoto(String chatId, File file) {
+		try {
+			HttpURLConnection httpUrlConnection = null;
+			URL url = new URL(getRequestURL("sendPhoto", new Params()
+					.add("chat_id", chatId)));
+			httpUrlConnection = (HttpURLConnection)url.openConnection();
+			httpUrlConnection.setUseCaches(false);
+			httpUrlConnection.setDoOutput(true);
+	
+			httpUrlConnection.setRequestMethod("POST");
+			httpUrlConnection.setRequestProperty("Connection", "Keep-Alive");
+			httpUrlConnection.setRequestProperty("Cache-Control", "no-cache");
+			httpUrlConnection.setRequestProperty("Content-Type", "multipart/form-data;boundary=***************");
+			
+			DataOutputStream request = new DataOutputStream(httpUrlConnection.getOutputStream());
+
+			request.writeBytes("--***************\r\n");
+			request.writeBytes("Content-Disposition: form-data; name=\"photo\";filename=\"" + file.getName() + "\"\r\n");
+			request.writeBytes("Content-Type: image/png\r\n");
+			request.writeBytes("\r\n");
+			
+			FileInputStream fis = new FileInputStream(file);
+			byte[] buf = new byte[1024];
+			int len;
+			while ((len = fis.read(buf)) >= 0) {
+				request.write(buf, 0, len);
+			}
+			fis.close();
+			
+			request.writeBytes("\r\n");
+			request.writeBytes("--***************--\r\n");
+			
+			request.flush();
+			request.close();
+			
+			InputStream in = httpUrlConnection.getInputStream();
+			InputStreamReader isr = new InputStreamReader(in);
+			JsonParser parser = new JsonParser();
+			JsonElement json = parser.parse(isr);
+			isr.close();
+			httpUrlConnection.disconnect();
+			
+			return new APIResponse(json);
+			
+		} catch (IOException t) {
+			Log.e("Unable to perform API request (sendPhoto)", t);
+			return null;
+		}
 	}
 }
