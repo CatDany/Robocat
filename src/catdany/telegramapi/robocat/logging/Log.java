@@ -16,6 +16,7 @@ public class Log {
 		try {
 			if (fw != null)
 				fw.close();
+			fw = new PrintWriter(new FileOutputStream("log.txt", true), true);
 		} catch (IOException t) {
 			Log.e("Unable to initialize file logging.", t);
 		}
