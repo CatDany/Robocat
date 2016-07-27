@@ -30,9 +30,6 @@ public class WoWToken {
 		try {
 			URL url = new URL(WOW_TOKEN_API);
 			InputStreamReader isr = new InputStreamReader(url.openStream());
-			char[] debug = new char[64];
-			isr.read(debug);
-			Log.i(new String(debug));
 			JsonParser parser = new JsonParser();
 			JsonElement json = parser.parse(isr);
 			isr.close();
