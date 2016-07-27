@@ -59,7 +59,7 @@ public class BotHandler implements Runnable {
 				if (cmd != null && cmd.startsWith("/")) {
 					cmd = cmd.split(" ")[0].substring(1);
 					if (commands.containsKey(cmd)) {
-						Log.i("Executing command /" + cmd + " from user @" + i.getActualMessage().getFrom().getUsername());
+						Log.i("Executing command /" + cmd + " from user @" + i.getActualMessage().getFrom().getUsername() + " [" + i.getActualMessage().getFrom().getFullName() + "] #" + i.getActualMessage().getFrom().getId());
 						commands.get(cmd).accept(i.getActualMessage());
 					}
 				}

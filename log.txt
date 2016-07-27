@@ -1,0 +1,5 @@
+[2016-07-27 20:01:24] [main] [INFO] Started Robocat. Build (Commit Hash): bfcb4717b11a431cddf6ac53f20aabe9241cda69
+[2016-07-27 20:01:25] [main] [INFO] Logged in as @robocat_bot #263584820
+[2016-07-27 20:01:25] [main] [INFO] Update request timeout is set to 5000 ms.
+[2016-07-27 20:01:45] [pool-1-thread-1] [INFO] Executing command /жетон from user @A_Pheel [A Pheel] #192267620
+[2016-07-27 20:01:45] [pool-1-thread-1] [INFO] Fetching data WoWToken.info API.

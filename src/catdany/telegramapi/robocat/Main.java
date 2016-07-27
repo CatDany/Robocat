@@ -21,7 +21,7 @@ import com.google.gson.JsonParser;
 
 public class Main {
 	
-	public static final String VERSION_COMMIT_HASH = "54a6c59cf45c44f2c153977542a78cffb24de3c0";
+	public static final String VERSION_COMMIT_HASH = "bfcb4717b11a431cddf6ac53f20aabe9241cda69";
 	
 	private static String TELEGRAM_BOT_TOKEN;
 	private static String HELP_COMMAND_TEXT;
@@ -37,6 +37,7 @@ public class Main {
 	public static final int LEGION_LAUNCH_TIME = 1472594400;
 	
 	public static void main(String[] args) {
+		Log.init();
 		Log.i("Started Robocat. Build (Commit Hash): " + VERSION_COMMIT_HASH);
 		readBotSettings();
 		Pamphlets.load();
