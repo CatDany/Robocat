@@ -34,7 +34,7 @@ public class WoWToken {
 			JsonElement json = parser.parse(isr);
 			isr.close();
 			
-			JsonObject eu = json.getAsJsonObject().get("EU").getAsJsonObject();
+			JsonObject eu = json.getAsJsonObject().get("update").getAsJsonObject().get("EU").getAsJsonObject();
 			JsonObject raw = eu.get("raw").getAsJsonObject();
 			price = raw.get("buy").getAsInt();
 			min24 = raw.get("24min").getAsInt();
