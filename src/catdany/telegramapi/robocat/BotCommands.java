@@ -35,24 +35,32 @@ public class BotCommands {
 		
 		botHandler.addCommand("листовка", (Message m) -> {
 			Pamphlets data = Pamphlets.getDataFor(m.getFrom().getId());
-			int collectedId = data.collect();
-			String msg = m.getFrom().getFullName() + ", у тебя аура существа, которое любит задавать вопросы.";
-			if (collectedId >= 0)
-				msg = m.getFrom().getFullName() + " получает предмет: <i>[" + Pamphlets.pamphletNames[collectedId] + "]</i>.";
-			botHandler.getBot().sendMessage("" + m.getChatId(), msg, "HTML", false);
-			
 			if (data.countObtained() == Pamphlets.pamphletNames.length) {
-				botHandler.getBot().sendMessage("" + m.getChatId(), m.getFrom().getFullName() + " получает достижение <b>[Вот теперь все ясно]</b>!", "HTML", false);
-			} else if (collectedId >= 0) {
-				StringBuilder str = pamphletsInfo(data);
-				botHandler.getBot().sendMessage("" + m.getFrom().getId(), str.toString());
+				botHandler.getBot().sendMessage("" + m.getChatId(), m.getFrom().getFullName() + " уже собрал все листовки и получил достижение <b>[Вот теперь все ясно]</b>.", "HTML", false);
+			} else {
+				int collectedId = data.collect();
+				
+				String msg;
+				if (collectedId >= 0)
+					msg = m.getFrom().getFullName() + " получает предмет: <i>[" + Pamphlets.pamphletNames[collectedId] + "]</i>. Осталось " + Utils.amount(Pamphlets.pamphletNames.length - data.countObtained(), "листовка", "листовки", "листовок") + ".";
+				else
+					msg = m.getFrom().getFullName() + ", у тебя аура существа, которое любит задавать вопросы.";
+				botHandler.getBot().sendMessage("" + m.getChatId(), msg, "HTML", false);
+				
+				if (data.countObtained() == Pamphlets.pamphletNames.length) {
+					botHandler.getBot().sendMessage("" + m.getChatId(), m.getFrom().getFullName() + " получает достижение <b>[Вот теперь все ясно]</b>!", "HTML", false);
+				} else if (collectedId >= 0) {
+					StringBuilder str = pamphletsInfo(data);
+					str.append("\nНапишите /листовка, чтобы собрать листовку.");
+					botHandler.getBot().sendMessage("" + m.getFrom().getId(), str.toString());
+				}
 			}
 		});
 		
 		botHandler.addCommand("листовки", (Message m) -> {
 			Pamphlets data = Pamphlets.getDataFor(m.getFrom().getId());
 			if (data.countObtained() == Pamphlets.pamphletNames.length) {
-				botHandler.getBot().sendMessage("" + m.getChatId(), m.getFrom().getFullName() + " имеет достижение <b>[Вот теперь все ясно]</b>!", "HTML", false);
+				botHandler.getBot().sendMessage("" + m.getChatId(), m.getFrom().getFullName() + " собрал все листовки и получил достижение <b>[Вот теперь все ясно]</b>.", "HTML", false);
 			} else {
 				StringBuilder str = pamphletsInfo(data);
 				APIResponse r0 = botHandler.getBot().sendMessage("" + m.getFrom().getId(), str.toString());
@@ -64,7 +72,7 @@ public class BotCommands {
 		
 		botHandler.addCommandAlias((Message m) -> {
 			int rand = (int)(Math.random() * 100);
-			botHandler.getBot().sendMessage("" + m.getChatId(), "<i>" + m.getFrom().getFullName() + " выбрасывает " + rand + " (0-100)</i>", "HTML", false);
+			botHandler.getBot().sendMessage("" + m.getChatId(), "" + m.getFrom().getFullName() + " выбрасывает " + rand + " (0-100)", "HTML", false);
 		}, "число", "roll");
 		
 		botHandler.addCommandAlias((Message m) -> {
@@ -116,7 +124,6 @@ public class BotCommands {
 		for (String i : data.getUnobtainedPamphlets()) {
 			str.append("- " + i + "\n");
 		}
-		str.append("\nНапишите /листовка, чтобы собрать листовку.");
 		return str;
 	}
 }
