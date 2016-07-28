@@ -6,6 +6,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
 
+import catdany.telegramapi.robocat.Main;
 import catdany.telegramapi.robocat.logging.Log;
 
 import com.google.gson.JsonElement;
@@ -13,7 +14,7 @@ import com.google.gson.JsonParser;
 
 public class BattleNetAPI {
 	
-	public static final String ARMORY_API_REQUEST_LINK = "https://eu.api.battle.net/wow/character/%s/%s?locale=ru_RU&apikey=ttrsb86ju2huuh6yvzfeatx5d74rayt5";
+	public static final String ARMORY_API_REQUEST_LINK = "https://eu.api.battle.net/wow/character/%s/%s?locale=ru_RU&apikey=%s";
 	public static final String ARMORY_LINK = "http://eu.battle.net/wow/ru/character/%s/%s/simple";
 	public static final String ARMORY_THUMBNAIL = "https://render-api-eu.worldofwarcraft.com/static-render/eu/";
 	
@@ -21,7 +22,8 @@ public class BattleNetAPI {
 		try {
 			return String.format(ARMORY_API_REQUEST_LINK,
 					URLEncoder.encode(realm, "UTF-8"),
-					URLEncoder.encode(character, "UTF-8"));
+					URLEncoder.encode(character, "UTF-8"),
+					Main.BATTLENET_APP_TOKEN);
 		} catch (UnsupportedEncodingException t) {
 			Log.e("UTF-8 is unsupported.", t);
 			return "http://utf8isnotsupportedkillyourself.com";
