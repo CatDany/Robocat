@@ -97,7 +97,7 @@ public class ArmoryData {
 	}
 	
 	public String getArmoryLink() {
-		return String.format(BattleNetAPI.ARMORY_LINK, realm, name);
+		return String.format(BattleNetAPI.ARMORY_LINK, realm.replace(' ', '-'), name);
 	}
 	
 	public static enum ClassEnum {
