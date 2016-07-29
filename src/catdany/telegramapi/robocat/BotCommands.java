@@ -36,19 +36,23 @@ public class BotCommands {
 		botHandler.addCommand("листовка", (Message m) -> {
 			Pamphlets data = Pamphlets.getDataFor(m.getFrom().getId());
 			if (data.countObtained() == Pamphlets.pamphletNames.length) {
-				botHandler.getBot().sendMessage("" + m.getChatId(), m.getFrom().getFullName() + " уже собрал все листовки и получил достижение <b>[Вот теперь все ясно]</b>.", "HTML", false);
+				botHandler.getBot().sendMessage("" + m.getChatId(), m.getFrom().getFullName() + " уже собрал все листовки и получил достижение <a href='http://ru.wowhead.com/achievement=11065'>[Вот теперь все ясно]</a>.", "HTML", true);
 			} else {
 				int collectedId = data.collect();
 				
 				String msg;
-				if (collectedId >= 0)
-					msg = m.getFrom().getFullName() + " получает предмет: <i>[" + Pamphlets.pamphletNames[collectedId] + "]</i>. Осталось " + Utils.amount(Pamphlets.pamphletNames.length - data.countObtained(), "листовка", "листовки", "листовок") + ".";
+				if (collectedId >= 0) {
+					msg = m.getFrom().getFullName() + " получает предмет: <i>[" + Pamphlets.pamphletNames[collectedId] + "]</i>. ";
+					int pamphletsLeft = Pamphlets.pamphletNames.length - data.countObtained();
+					if (pamphletsLeft > 0)
+						msg += Utils.amount(pamphletsLeft, "Осталась %s листовка", "Осталось %s листовки", "Осталось %s листовок") + ".";
+				}
 				else
 					msg = m.getFrom().getFullName() + ", у тебя аура существа, которое любит задавать вопросы.";
 				botHandler.getBot().sendMessage("" + m.getChatId(), msg, "HTML", false);
 				
 				if (data.countObtained() == Pamphlets.pamphletNames.length) {
-					botHandler.getBot().sendMessage("" + m.getChatId(), m.getFrom().getFullName() + " получает достижение <b>[Вот теперь все ясно]</b>!", "HTML", false);
+					botHandler.getBot().sendMessage("" + m.getChatId(), m.getFrom().getFullName() + " получает достижение <a href='http://ru.wowhead.com/achievement=11065'>[Вот теперь все ясно]</a>!", "HTML", true);
 				} else if (collectedId >= 0) {
 					StringBuilder str = pamphletsInfo(data);
 					str.append("\nНапишите /листовка, чтобы собрать листовку.");
@@ -60,7 +64,7 @@ public class BotCommands {
 		botHandler.addCommand("листовки", (Message m) -> {
 			Pamphlets data = Pamphlets.getDataFor(m.getFrom().getId());
 			if (data.countObtained() == Pamphlets.pamphletNames.length) {
-				botHandler.getBot().sendMessage("" + m.getChatId(), m.getFrom().getFullName() + " собрал все листовки и получил достижение <b>[Вот теперь все ясно]</b>.", "HTML", false);
+				botHandler.getBot().sendMessage("" + m.getChatId(), m.getFrom().getFullName() + " собрал все листовки и получил достижение <a href='http://ru.wowhead.com/achievement=11065'>[Вот теперь все ясно]</a>.", "HTML", true);
 			} else {
 				StringBuilder str = pamphletsInfo(data);
 				APIResponse r0 = botHandler.getBot().sendMessage("" + m.getFrom().getId(), str.toString());
