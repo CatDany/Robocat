@@ -8,6 +8,7 @@ import java.net.URLEncoder;
 
 import catdany.telegramapi.robocat.Main;
 import catdany.telegramapi.robocat.logging.Log;
+import catdany.telegramapi.robocat.utils.Utils;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -33,7 +34,7 @@ public class BattleNetAPI {
 	public static ArmoryData requestArmoryData(String realm, String character) {
 		try {
 			URL url = new URL(getArmoryRequestURL(realm, character));
-			InputStreamReader isr = new InputStreamReader(url.openStream());
+			InputStreamReader isr = new InputStreamReader(Utils.getURLStream(url));
 			JsonParser parser = new JsonParser();
 			JsonElement json = parser.parse(isr);
 			isr.close();

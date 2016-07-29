@@ -3,7 +3,9 @@ package catdany.telegramapi.robocat.utils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 
 import catdany.telegramapi.robocat.logging.Log;
 import catdany.telegramapi.robocat.telegram.Message;
@@ -33,6 +35,30 @@ public class Utils {
 		} catch (IOException t) {
 			Log.e("Unable to get IP address.", t);
 			return null;
+		}
+	}
+	
+	public static InputStream getURLStream(URL url) throws IOException {
+		URLConnection connection = url.openConnection();
+		try {
+		    return connection.getInputStream();
+		} catch (IOException httpError) {
+		    if (connection instanceof HttpURLConnection) {
+		        HttpURLConnection httpConn = (HttpURLConnection)connection;
+		        int statusCode;
+				try {
+					statusCode = httpConn.getResponseCode();
+			        if (statusCode != 200) {
+			            return httpConn.getErrorStream();
+			        } else {
+			        	throw httpError;
+			        }
+				} catch (IOException t) {
+					throw new IOException("Unable to get response code from URLConnection.", t);
+				}
+		    } else {
+		    	throw new ClassCastException("URLConnection is not an instance of HttpURLConnection.");
+		    }
 		}
 	}
 	

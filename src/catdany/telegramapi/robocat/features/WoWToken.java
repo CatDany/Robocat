@@ -12,6 +12,7 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 import catdany.telegramapi.robocat.logging.Log;
+import catdany.telegramapi.robocat.utils.Utils;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -38,7 +39,7 @@ public class WoWToken {
 	private static void forceUpdateTokenPrice() {
 		try {
 			URL url = new URL(WOW_TOKEN_API);
-			InputStreamReader isr = new InputStreamReader(url.openStream());
+			InputStreamReader isr = new InputStreamReader(Utils.getURLStream(url));
 			JsonParser parser = new JsonParser();
 			JsonElement json = parser.parse(isr);
 			isr.close();

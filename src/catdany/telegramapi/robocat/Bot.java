@@ -12,6 +12,7 @@ import java.net.URL;
 import catdany.telegramapi.robocat.logging.Log;
 import catdany.telegramapi.robocat.telegram.Update;
 import catdany.telegramapi.robocat.utils.Params;
+import catdany.telegramapi.robocat.utils.Utils;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -37,7 +38,7 @@ public class Bot {
 		String requestURL = getRequestURL(method, params);
 		try {
 			URL url = new URL(requestURL);
-			InputStreamReader isr = new InputStreamReader(url.openStream());
+			InputStreamReader isr = new InputStreamReader(Utils.getURLStream(url));
 			JsonParser parser = new JsonParser();
 			JsonElement json = parser.parse(isr);
 			isr.close();
