@@ -39,7 +39,7 @@ public class Utils {
 	public static String amount(int amount, String one, String few, String several) {
 		if (amount % 10 == 1 && amount != 11)
 			return amount + " " + one;
-		else if (amount % 10 >= 2 && amount % 10 <= 4 && amount < 12 && amount > 14)
+		else if (amount % 10 >= 2 && amount % 10 <= 4 && (amount < 12 || amount > 14))
 			return amount + " " + few;
 		else
 			return amount + " " + several;
