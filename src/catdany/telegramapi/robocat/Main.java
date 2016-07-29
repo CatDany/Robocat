@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
+import catdany.telegramapi.robocat.features.Blacklist;
 import catdany.telegramapi.robocat.features.Pamphlets;
 import catdany.telegramapi.robocat.logging.Log;
 
@@ -14,11 +15,12 @@ import com.google.gson.JsonParser;
 
 public class Main {
 	
-	public static final String VERSION_COMMIT_HASH = "fb8448516871c6d41decbd3282bd1815c87e591f";
+	public static final String VERSION_COMMIT_HASH = "8aa02625c21b791992c41492b2bab000732aeafa";
 	
 	public static String TELEGRAM_BOT_TOKEN;
 	public static String BATTLENET_APP_TOKEN;
 	public static String HELP_COMMAND_TEXT;
+	public static int GOD_AMONGST_MEN;
 	public static long BOT_UPDATE_REQUEST_DELAY;
 	
 	public static final String AMARI_STICKERS[] = new String[] {
@@ -35,6 +37,7 @@ public class Main {
 		Log.i("Started Robocat. Build (Commit Hash): " + VERSION_COMMIT_HASH);
 		readBotSettings();
 		Pamphlets.load();
+		Blacklist.load();
 		
 		Bot bot = new Bot(TELEGRAM_BOT_TOKEN);
 		BotHandler botHandler = new BotHandler(bot, BOT_UPDATE_REQUEST_DELAY);
@@ -52,6 +55,7 @@ public class Main {
 			TELEGRAM_BOT_TOKEN = json.get("telegram_token").getAsString();
 			BATTLENET_APP_TOKEN = json.get("battlenet_token").getAsString();
 			HELP_COMMAND_TEXT = json.get("help").getAsString();
+			GOD_AMONGST_MEN = json.get("god_amongst_men").getAsInt();
 			BOT_UPDATE_REQUEST_DELAY = json.get("update_request_delay").getAsLong();
 		} catch (FileNotFoundException t) {
 			Log.e("bot_settings.txt does not exist.", t);

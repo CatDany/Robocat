@@ -42,6 +42,10 @@ public class Message {
 		return from;
 	}
 	
+	public Message getReplyTo() {
+		return Utils.msg(json.get("reply_to_message"));
+	}
+	
 	public int getChatId() {
 		return json.get("chat").getAsJsonObject().get("id").getAsInt();
 	}

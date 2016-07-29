@@ -6,6 +6,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
+import catdany.telegramapi.robocat.features.Blacklist;
 import catdany.telegramapi.robocat.logging.Log;
 import catdany.telegramapi.robocat.telegram.Message;
 import catdany.telegramapi.robocat.telegram.Update;
@@ -56,7 +57,7 @@ public class BotHandler implements Runnable {
 			Update[] upd = bot.getUpdates();
 			for (Update i : upd) {
 				String cmd = i.getActualMessage().getText();
-				if (cmd != null && cmd.startsWith("/")) {
+				if (cmd != null && cmd.startsWith("/") && !Blacklist.isBlacklisted(i.getActualMessage().getFrom().getId())) {
 					cmd = cmd.split(" ")[0].substring(1);
 					if (commands.containsKey(cmd)) {
 						Log.i("Executing command /" + cmd + " from user @" + i.getActualMessage().getFrom().getUsername() + " [" + i.getActualMessage().getFrom().getFullName() + "] #" + i.getActualMessage().getFrom().getId());
