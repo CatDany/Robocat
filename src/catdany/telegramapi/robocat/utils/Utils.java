@@ -9,6 +9,7 @@ import java.net.URLConnection;
 
 import catdany.telegramapi.robocat.logging.Log;
 import catdany.telegramapi.robocat.telegram.Message;
+import catdany.telegramapi.robocat.telegram.Photo;
 import catdany.telegramapi.robocat.telegram.User;
 
 import com.google.gson.JsonElement;
@@ -105,5 +106,9 @@ public class Utils {
 	
 	public static User user(JsonElement json) {
 		return json != null ? new User(json) : null;
+	}
+	
+	public static Photo photo(JsonElement json) {
+		return json != null ? new Photo(json) : null;
 	}
 }

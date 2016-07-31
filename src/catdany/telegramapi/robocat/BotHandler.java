@@ -22,6 +22,7 @@ public class BotHandler implements Runnable {
 	
 	private Bot bot;
 	private HashMap<String, Consumer<Message>> commands;
+	private HashMap<String, Consumer<Message>> replies;
 	
 	private int botUserId;
 	private String botUsername;
@@ -31,6 +32,7 @@ public class BotHandler implements Runnable {
 		this.bot = bot;
 		this.updateRequestTimeoutMillis = updateRequestTimeoutMillis;
 		this.commands = new HashMap<String, Consumer<Message>>();
+		this.replies = new HashMap<String, Consumer<Message>>();
 		
 		this.exec = Executors.newSingleThreadScheduledExecutor();
 	}
@@ -62,6 +64,14 @@ public class BotHandler implements Runnable {
 					if (commands.containsKey(cmd)) {
 						Log.i("Executing command /" + cmd + " from user @" + i.getActualMessage().getFrom().getUsername() + " [" + i.getActualMessage().getFrom().getFullName() + "] #" + i.getActualMessage().getFrom().getId());
 						commands.get(cmd).accept(i.getActualMessage());
+					}
+				} else {
+					if (i.getActualMessage().getReplyTo() != null) {
+						String replyText = i.getActualMessage().getReplyTo().getText();
+						if (replies.containsKey(replyText)) {
+							Log.i("Executing reply from user @" + i.getActualMessage().getFrom().getUsername() + " [" + i.getActualMessage().getFrom().getFullName() + "] #" + i.getActualMessage().getFrom().getId() + " -> " + replyText);
+							replies.get(replyText).accept(i.getActualMessage());
+						}
 					}
 				}
 			}
@@ -104,6 +114,24 @@ public class BotHandler implements Runnable {
 	public boolean removeCommand(String command) {
 		if (commands.containsKey(command)) {
 			commands.put(command, null);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public boolean addReply(String replyText, Consumer<Message> r) {
+		if (replies.containsKey(replyText)) {
+			return false;
+		} else {
+			replies.put(replyText, r);
+			return true;
+		}
+	}
+	
+	public boolean removeReply(String replyText) {
+		if (replies.containsKey(replyText)) {
+			replies.put(replyText, null);
 			return true;
 		} else {
 			return false;

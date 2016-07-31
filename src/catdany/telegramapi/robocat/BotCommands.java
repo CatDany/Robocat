@@ -1,12 +1,15 @@
 package catdany.telegramapi.robocat;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 
 import catdany.telegramapi.robocat.features.ArmoryData;
 import catdany.telegramapi.robocat.features.BattleNetAPI;
+import catdany.telegramapi.robocat.features.ImageEditor;
 import catdany.telegramapi.robocat.features.Pamphlets;
 import catdany.telegramapi.robocat.features.WoWToken;
 import catdany.telegramapi.robocat.telegram.Message;
+import catdany.telegramapi.robocat.telegram.Photo;
 import catdany.telegramapi.robocat.utils.Params;
 import catdany.telegramapi.robocat.utils.Utils;
 
@@ -116,6 +119,22 @@ public class BotCommands {
 				}
 			}
 		});
+		
+		final String replyTextFlipRight = "Ответьте на это сообщение фотографией, которую хотите отразить слева направо.";
+		botHandler.addCommand("шреш", (Message m) -> {
+			botHandler.getBot().sendMessage("" + m.getChatId(), replyTextFlipRight);
+		});
+		botHandler.addReply(replyTextFlipRight, (Message m) -> {
+			doFlip(m, false, botHandler);
+		});
+		
+		final String replyTextFlipLeft = "Ответьте на это сообщение фотографией, которую хотите отразить справа налево.";
+		botHandler.addCommand("кек", (Message m) -> {
+			botHandler.getBot().sendMessage("" + m.getChatId(), replyTextFlipLeft);
+		});
+		botHandler.addReply(replyTextFlipLeft, (Message m) -> {
+			doFlip(m, true, botHandler);
+		});
 	}
 	
 	private static StringBuilder pamphletsInfo(Pamphlets data) {
@@ -129,5 +148,36 @@ public class BotCommands {
 			str.append("- " + i + "\n");
 		}
 		return str;
+	}
+	
+	private static void doFlip(Message m, boolean rightToLeft, BotHandler botHandler) {
+		Photo[] photo = m.getPhoto();
+		if (photo.length == 0) {
+			botHandler.getBot().sendMessage("" + m.getChatId(), "Вы не прикрепили фото. Возможно, потому что Вы отправили фотографию файлом.", "", false, m.getId());
+			return;
+		}
+		Photo best = ImageEditor.getBestPhoto(photo);
+		if (best == null) {
+			botHandler.getBot().sendMessage("" + m.getChatId(), "Фотография слишком большая!", "", false, m.getId());
+			return;
+		}
+		BufferedImage img = ImageEditor.loadImage(best, botHandler.getBot()).get();
+		if (img == null) {
+			botHandler.getBot().sendMessage("" + m.getChatId(), "Что-то пошло не так.", "", false, m.getId());
+			return;
+		}
+		
+		if (rightToLeft)
+			ImageEditor.flipLeft(img);
+		else
+			ImageEditor.flipRight(img);
+		
+		File tmpOut = ImageEditor.saveSilently(img);
+		if (tmpOut == null) {
+			botHandler.getBot().sendMessage("" + m.getChatId(), "Что-то пошло не так.", "", false, m.getId());
+			return;
+		}
+		botHandler.getBot().sendPhoto("" + m.getChatId(), tmpOut);
+		tmpOut.delete();
 	}
 }

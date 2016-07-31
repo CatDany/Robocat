@@ -2,6 +2,7 @@ package catdany.telegramapi.robocat.telegram;
 
 import catdany.telegramapi.robocat.utils.Utils;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -48,6 +49,19 @@ public class Message {
 	
 	public int getChatId() {
 		return json.get("chat").getAsJsonObject().get("id").getAsInt();
+	}
+	
+	public Photo[] getPhoto() {
+		if (json.has("photo")) {
+			JsonArray json = this.json.get("photo").getAsJsonArray();
+			Photo[] photo = new Photo[json.size()];
+			for (int i = 0; i < json.size(); i++) {
+				photo[i] = Utils.photo(json.get(i));
+			}
+			return photo;
+		} else {
+			return new Photo[0];
+		}
 	}
 	
 	@Override

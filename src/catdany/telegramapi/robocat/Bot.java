@@ -3,11 +3,13 @@ package catdany.telegramapi.robocat;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.UUID;
 
 import catdany.telegramapi.robocat.logging.Log;
 import catdany.telegramapi.robocat.telegram.Update;
@@ -21,6 +23,7 @@ import com.google.gson.JsonParser;
 public class Bot {
 	
 	public static final String TELEGRAM_REQUEST_URL = "https://api.telegram.org/bot";
+	public static final String TELEGRAM_FILE_URL = "https://api.telegram.org/file/bot";
 	
 	private String token;
 	
@@ -32,6 +35,10 @@ public class Bot {
 	
 	private String getRequestURL(String method, Params params) {
 		return TELEGRAM_REQUEST_URL + token + "/" + method + "?" + params.toString();
+	}
+	
+	private String getFileURL(String file) {
+		return TELEGRAM_FILE_URL + token + "/" + file;
 	}
 	
 	public APIResponse request(String method, Params params) {
@@ -62,12 +69,17 @@ public class Bot {
 		return updates;
 	}
 	
-	public APIResponse sendMessage(String chatId, String message, String parseMode, boolean disableWebPagePreview) {
+	public APIResponse sendMessage(String chatId, String message, String parseMode, boolean disableWebPagePreview, int replyToId) {
 		return request("sendMessage", new Params()
 				.add("chat_id", chatId)
 				.add("text", message)
 				.add("parse_mode", parseMode)
-				.add("disable_web_page_preview", "" + disableWebPagePreview));
+				.add("disable_web_page_preview", "" + disableWebPagePreview)
+				.add("reply_to_message_id", "" + replyToId));
+	}
+	
+	public APIResponse sendMessage(String chatId, String message, String parseMode, boolean disableWebPagePreview) {
+		return sendMessage(chatId, message, parseMode, disableWebPagePreview, 0);
 	}
 	
 	public APIResponse sendMessage(String chatId, String message) {
@@ -120,6 +132,33 @@ public class Bot {
 			
 		} catch (IOException t) {
 			Log.e("Unable to perform API request (sendPhoto)", t);
+			return null;
+		}
+	}
+	
+	public File downloadFile(String fileId) {
+		APIResponse r0 = request("getFile", new Params()
+				.add("file_id", fileId));
+		if (r0.isOK()) {
+			try {
+				URL url = new URL(getFileURL(r0.getResultAsObject().get("file_path").getAsString()));
+				InputStream s = url.openStream();
+				File tmpFile = new File("temp_" + UUID.randomUUID() + ".jpg");
+				FileOutputStream fos = new FileOutputStream(tmpFile);
+				byte[] buf = new byte[1024];
+				int len;
+				while ((len = s.read(buf)) >= 0) {
+					fos.write(buf, 0, len);
+				}
+				fos.close();
+				s.close();
+				return tmpFile;
+			} catch (IOException t) {
+				Log.e("Unable to download file " + fileId, t);
+				return null;
+			}
+		} else {
+			Log.e("Unable to get file path for file: " + fileId, r0.getException());
 			return null;
 		}
 	}
