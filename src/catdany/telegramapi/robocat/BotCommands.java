@@ -2,7 +2,6 @@ package catdany.telegramapi.robocat;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.Calendar;
 
 import catdany.telegramapi.robocat.features.ArmoryData;
 import catdany.telegramapi.robocat.features.BattleNetAPI;
