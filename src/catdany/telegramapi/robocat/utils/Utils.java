@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Calendar;
 
 import catdany.telegramapi.robocat.logging.Log;
 import catdany.telegramapi.robocat.telegram.Message;
@@ -78,6 +79,12 @@ public class Utils {
 			str.append(separator + array[i]);
 		}
 		return str.substring(1);
+	}
+	
+	public static int getCal(long ms, int field) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(ms);
+		return cal.get(field);
 	}
 	
 	public static <T>T draw(T[] pool) {

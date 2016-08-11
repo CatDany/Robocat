@@ -2,12 +2,14 @@ package catdany.telegramapi.robocat;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.Calendar;
 
 import catdany.telegramapi.robocat.features.ArmoryData;
 import catdany.telegramapi.robocat.features.BattleNetAPI;
 import catdany.telegramapi.robocat.features.ImageEditor;
 import catdany.telegramapi.robocat.features.Pamphlets;
 import catdany.telegramapi.robocat.features.WoWToken;
+import catdany.telegramapi.robocat.logging.Log;
 import catdany.telegramapi.robocat.telegram.Message;
 import catdany.telegramapi.robocat.telegram.Photo;
 import catdany.telegramapi.robocat.utils.Params;
@@ -135,6 +137,29 @@ public class BotCommands {
 		botHandler.addReply(replyTextFlipLeft, (Message m) -> {
 			doFlip(m, true, botHandler);
 		});
+		
+		botHandler.addCommandAlias((Message m) -> {
+			final long startTime = 1470898800000L;
+			final long now = System.currentTimeMillis();
+			final long rotationSpeed = 4*60*60*1000L;
+			final long nextRotation = now + rotationSpeed - (now - startTime) % rotationSpeed;
+			final int timeLeft = (int)((nextRotation - now) / 1000);
+			
+			final int hoursLeft = timeLeft / (60*60);
+			final int minutesLeft = timeLeft % (60*60) / 60;
+			
+			Log.i("h " + hoursLeft + " m "  + minutesLeft + " now-startTime " + (now - startTime) + " % " + ((now - startTime) % rotationSpeed));
+			
+			String msg;
+			if (hoursLeft == 0 && minutesLeft == 0)
+				msg = "Вторжения демонов вот-вот обновятся!";
+			else if (hoursLeft == 0)
+				msg = "Вторжения демонов обновятся через " + Utils.amount(minutesLeft, "%s минуту", "%s минуты", "%s минут") + ".";
+			else
+				msg = "Вторжения демонов обновятся через " + Utils.amount(hoursLeft, "%s час", "%s часа", "%s часов") + " " + Utils.amount(minutesLeft, "%s минуту", "%s минуты", "%s минут") + ".";
+			
+			botHandler.getBot().sendMessage("" + m.getChatId(), msg);
+		}, "вторжения", "вторжение");
 	}
 	
 	private static StringBuilder pamphletsInfo(Pamphlets data) {
