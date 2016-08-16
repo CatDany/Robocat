@@ -150,7 +150,7 @@ public class BotCommands {
 			if (now > 1472022000000L)
 				rotationSpeed /= 3;
 			
-			if (now > Main.LEGION_LAUNCH_TIME) {
+			if (now > Main.LEGION_LAUNCH_TIME*1000L) {
 				botHandler.getBot().sendMessage("" + m.getChatId(), "Мы одержали победу над демонами в Калимдоре и Восточных королевствах!");
 				return;
 			}
