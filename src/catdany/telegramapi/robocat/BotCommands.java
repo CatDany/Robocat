@@ -85,11 +85,15 @@ public class BotCommands {
 		
 		botHandler.addCommandAlias((Message m) -> {
 			int timeLeft = Main.LEGION_LAUNCH_TIME - (int)(System.currentTimeMillis()/1000);
-			int days = timeLeft / (60*60*24);
-			int hours = timeLeft % (60*60*24) / (60*60);
-			int minutes = timeLeft % (60*60) / 60;
-			int seconds = timeLeft % 60;
-			botHandler.getBot().sendMessage("" + m.getChatId(), String.format("Терпение! Осталось всего %s д %s ч %s м %s с.", days, hours, minutes, seconds));
+			if (timeLeft > 0) {
+				int days = timeLeft / (60*60*24);
+				int hours = timeLeft % (60*60*24) / (60*60);
+				int minutes = timeLeft % (60*60) / 60;
+				int seconds = timeLeft % 60;
+				botHandler.getBot().sendMessage("" + m.getChatId(), String.format("Терпение! Осталось всего %s д %s ч %s м %s с.", days, hours, minutes, seconds));
+			} else {
+				botHandler.getBot().sendMessage("" + m.getChatId(), "Ну, так иди играй в Легион! Он вышел уже -_-");
+			}
 			
 		}, "легион", "скореебылегион");
 		
@@ -140,7 +144,17 @@ public class BotCommands {
 		botHandler.addCommandAlias((Message m) -> {
 			final long startTime = 1470898800000L;
 			final long now = System.currentTimeMillis();
-			final long rotationSpeed = 4*60*60*1000L;
+			long rotationSpeed = 4*60*60*1000L;
+			if (now > 1471417200000L)
+				rotationSpeed /= 3;
+			if (now > 1472022000000L)
+				rotationSpeed /= 3;
+			
+			if (now > Main.LEGION_LAUNCH_TIME) {
+				botHandler.getBot().sendMessage("" + m.getChatId(), "Мы одержали победу над демонами в Калимдоре и Восточных королевствах!");
+				return;
+			}
+			
 			final long nextRotation = now + rotationSpeed - (now - startTime) % rotationSpeed;
 			final int timeLeft = (int)((nextRotation - now) / 1000);
 			
